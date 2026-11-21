@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SwastiQ language demo</title>
+<style>
+  body{font-family:system-ui,"Noto Sans Tamil","Noto Sans Devanagari","Noto Sans Telugu","Noto Sans Kannada","Noto Sans Malayalam","Noto Sans Gujarati",sans-serif;margin:0;background:#eef3f9;color:#1b2a41}
+  .wrap{max-width:900px;margin:0 auto;padding:24px}
+  h2{margin:.2em 0 .6em}
+  .picker{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px}
+  .picker button{padding:14px 8px;border:1px solid #cfd8e6;border-radius:12px;background:#fff;cursor:pointer;font-size:18px}
+  .picker button.on{border-color:#1d4f9c;background:#e8f0fc}
+  .picker small{display:block;color:#667;font-size:12px;margin-top:4px}
+  .card{background:#fff;border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 2px 10px #0001}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .stat{flex:1;min-width:150px;background:#f4f8fd;border-radius:10px;padding:12px}
+  .stat b{font-size:26px;display:block}
+  .chip{display:inline-block;padding:4px 10px;border-radius:999px;background:#fde8e8;margin-right:6px;font-size:13px}
+  nav span{display:inline-block;margin-right:14px;font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Login-style language chooser: NOT translated by the engine (data-page="login") -->
+  <section data-page="login">
+    <h2>Choose Language</h2>
+    <div class="picker" id="picker"></div>
+  </section>
+
+  <!-- Sample app screens: every English string below is translated automatically -->
+  <section id="app">
+    <nav class="card">
+      <span>Dashboard</span><span>Voice Assistant</span><span>Records</span><span>Beneficiaries</span>
+      <span>Follow-up</span><span>Alerts</span><span>PHC Referrals</span><span>Reports</span><span>Settings</span>
+    </nav>
+
+    <div class="card">
+      <h2 id="welcome"></h2>
+      <div>Every Visit Matters. Every Life Counts.</div>
+      <p><span>System ready</span> · <span>Online</span> · <span>Waiting to sync</span></p>
+    </div>
+
+    <div class="card">
+      <h3>Community Pulse</h3>
+      <div>Immediate Attention·5 overdue·6 active alerts·2 review needed</div>
+      <p><span class="chip">Ward 1 — 1 people — 1 alert(s)</span><span class="chip">Ward 2 — 2 people — 2 alert(s)</span></p>
+    </div>
+
+    <div class="row">
+      <div class="stat"><b>6</b>Total Beneficiaries</div>
+      <div class="stat"><b>0</b>Today's Scheduled Visits</div>
+      <div class="stat"><b>6</b>Pending Follow-ups</div>
+      <div class="stat"><b>2</b>Records Requiring Review</div>
+      <div class="stat"><b>1</b>Critical Alerts</div>
+      <div class="stat"><b>3</b>Reviewed Visits</div>
+    </div>
+
+    <div class="card">
+      <h3>Smart Alert Center</h3>
+      <div class="row">
+        <div class="stat"><b>1</b>Critical open</div><div class="stat"><b>0</b>Awaiting PHC</div>
+        <div class="stat"><b>6</b>To acknowledge</div><div class="stat"><b>0</b>Cases closed</div>
+      </div>
+      <p>Risk alerts are decision-support prompts. Critical danger signs require urgent assessment under the applicable health protocol. An in-app alert does not mean the PHC has received a referral.</p>
+      <p>Low · Reminder &nbsp; Moderate · Attention &nbsp; Critical · Urgent</p>
+      <h4>Critical Patient Alert</h4>
+      <p><b>Patient:</b> <span data-no-i18n>Baby of Sunita</span><br>
+         <b>Beneficiary ID:</b> 105<br>
+         <b>Reported finding:</b> Unable to feed reported<br>
+         <b>Location:</b> Household visit</p>
+      <h4>Required action</h4>
+      <ol>
+        <li>Inform the patient and arrange urgent clinical assessment according to the PHC protocol.</li>
+        <li>Contact the PHC immediately.</li>
+        <li>Do not delay emergency care while waiting for digital acknowledgement.</li>
+      </ol>
+      <button>PHC dashboard</button> <button>Test alert sounds</button>
+    </div>
+
+    <div class="card">
+      <h3>PHC Referral Dashboard</h3>
+      <div class="row"><div class="stat"><b>00</b>Urgent referrals</div><div class="stat"><b>00</b>Awaiting review</div></div>
+      <h4>Incoming referral</h4>
+      <p>No referrals yet. When an ASHA worker marks a referral as initiated, it appears here with a sound alert.</p>
+    </div>
+  </section>
+</div>
+
+<script src="i18n.js"></script>
+<script>
+  // Build the picker from the engine's own language list
+  var picker = document.getElementById('picker');
+  I18N.languages.forEach(function (l) {
+    var b = document.createElement('button');
+    b.setAttribute('data-set-lang', l.code);
+    b.innerHTML = l.native + '<small>' + l.name + '</small>';
+    picker.appendChild(b);
+  });
+  function mark() {
+    [].forEach.call(picker.children, function (b) {
+      b.classList.toggle('on', b.getAttribute('data-set-lang') === I18N.getLang());
+    });
+  }
+  I18N.onChange(mark); mark();
+
+  // Example of translating text built in JavaScript
+  var w = document.getElementById('welcome');
+  w.textContent = I18N.t('Welcome Back, {name}', { name: 'Presika' });
+  I18N.onChange(function () { w.textContent = I18N.t('Welcome Back, {name}', { name: 'Presika' }); });
+</script>
+</body>
+</html>
